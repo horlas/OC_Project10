@@ -1,14 +1,14 @@
 # Projet 10 : Deploiement de la Plateforme Web : Pur_Beurre
 
 
-## Choix technologique et étapes d'installation
+## Choix technologiques et étapes d'installation
 * Création d'une Virtual Machnine (lxc) sur un Serveur Virtuel Privé.
 * Installation d'Ubuntu 18.04 sur la VM.
 * Configuration un utilisateur différent de root avec droit sudo: aurelia avec mot de pass, de manière à ce que toutes actions importantes d'administrations de ce système soient faites volontairement.
 * Modification du fichier sshd.config pour suspendre root de la connexion à la VM.
 * Mise à jour des paquets , installation de python postgres...
 * Création du dépot git dans /home/aurelia/pur_beurre/
-* Création de environnement virtuel
+* Création de l'environnement virtuel
 * Rappatriement des données de l'application ```git pull https://github.com/horlas/OC_Project11```Installation de l'environnement : ```pip install -r requirements.txt```
 * Création de base de données : ```$sudo -u postgres createdb quality``` . Création de l'utilisateur ```$sudo -u postgres createuser --interactive``` ....
 * Installation des la base de données : deux dumps: table utilisateur dans quality/dumps/user.json et données dans quality.json. ```(venv)$python manage.py loaddata *fichier*```
@@ -21,7 +21,7 @@
 ### Separation d'environnement et configuration de Production 
 Une fois le fichier prod\_settings.py rapatrié , on l'enlève du dépôt local en l’ajoutant dans le .gitignore 
 
-	$git rm \--cached prod_settings .gitignore 
+	$git rm --cached prod_settings .gitignore 
 
 pour la prise en considération de la desindextion de prod_settings.py
 
@@ -34,7 +34,7 @@ sur le serveur:
 	git pull <depot>
 Le fichier prod_settings.py est à présent uniquement présent sur le serveur mais plus sur github.
 
-![prod_settings](images/Capture du 2018-11-28 10-48-03.png)
+![prod_settings](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-28%2010-48-03.png)
 
 ## Installation du serveur web : nginx
 
