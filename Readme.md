@@ -18,7 +18,7 @@
 	
 	export DJANGO\_SETTINGS\_MODULE=pur-beurre.prod_settings
 
-### Separation d'environnement et configuration de Production 
+### Séparation des environnements et configuration de l'environnement de Production 
 Une fois le fichier prod\_settings.py rapatrié , on l'enlève du dépôt local en l’ajoutant dans le .gitignore 
 
 	$git rm --cached prod_settings .gitignore 
@@ -44,7 +44,7 @@ La configuration se trouve dans ```etc/nginx/sites-available/```
 Création d'un fichier de configuration ```touch etc/nginx/sites-available/pur_beurre```
 Edition et ecriture avec vim ```sudo vi etc/nginx/sites-available/pur_beurre```
 
-![config](images/Capture du 2018-11-28 15-53-25.png)
+![config](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-28%2015-53-25.png)
 
 Dans ce fichier de configuration les 'directives' sont:
 
@@ -77,7 +77,7 @@ Ajout d'un nouveau processus dans la configuration de supervisor
 
 Voici la configuration mise en place 
 
-![config](./images/Capture du 2018-11-28 15-12-51.png)
+![config](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-28%2015-12-51.png)
 
 A noter que nous pouvons transmettre via supervisor des variables environnement , nous les avons donc supprimer de notre .bashrc . (SECRET_KEY, DJANGO_SETTINGS_MODULE)
 
@@ -110,11 +110,11 @@ Nous l'interfaçons avec notre dépôt Github. Il surveille dans notre cas la br
 Création d'un [compte.](https://travis-ci.com/horlas/OC_Project11/builds)
 Ajout sur la dashboard de Travis de notre dépôt Github:
 
-![dashboard](./images/Capture du 2018-11-28 16-29-22.png)
+![dashboard](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-28%2016-29-22.png)
 
 Sur notre environnement local , au même niveau que manage.py , nous créons un nouveau fichier travis.yml
 
-![](images/Capture du 2018-11-28 16-19-19.png)
+![](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-28%2016-19-19.png)
 
 #### Attention :
 Nous sommes avec la version de Django 2.1.3 qui fonctionne uniquement avec une version de Postgres supérieur à 9.4 , or [Travis par défaut utilise une version de Postgres 9.2 ](https://docs.travis-ci.com/user/database-setup/#postgresql). C'est pour cela nous avons rajouté les lignes suivantes:
@@ -125,9 +125,9 @@ Pour 'forcer' la version de Postgresql.
 
 #### Une vision de l'historique de notre activité:
 
-![](images/Capture du 2018-11-28 16-30-31.png)
-![](images/Capture du 2018-11-28 16-30-47.png)
-![](images/Capture du 2018-11-28 16-31-11.png)
+![hist](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-28%2016-30-31.png)
+![hist](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-28%2016-30-47.png)
+![hist](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-28%2016-31-11.png)
 
 ## Monitorer le serveur : mise en place de Newrelic
 [Newrelic Infrastructure](https://infrastructure.eu.newrelic.com) offre la possibilité de monitorer notre serveur : Etat de la CPU , de la mémoire vive, le load average etc....
@@ -135,7 +135,7 @@ Pour 'forcer' la version de Postgresql.
 * Création d'un compte sur New Relic
 * Sur le site Infrastructure/All Host/Add host
 
-![](images/Capture du 2018-11-29 10-10-30.png)
+![nr](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-29%2010-10-30.png)
 
 Suivre les instructions:
 
@@ -143,7 +143,7 @@ Suivre les instructions:
 * Installation de Newrelic avec cette nouvelle lincence: de charger le dépôt d'installation de Newrelic, et installation du paquet.
 * Dorénavant le monitoring de notre système peut se [surveiller](https://infrastructure.eu.newrelic.com/accounts/2173498/processes) depuis la plateforme New Relic :
 
-![](images/Capture du 2018-11-29 11-30-20.png)
+![monito](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-29%2011-30-20.png)
 
 ## Surveillance de l'application Django Pur_beurre : Sentry
 * Création d'un compte, création d'un projet Django nommé pur-beurre.
@@ -165,7 +165,7 @@ Ne pas oublier de mettre à jour requirements.tx
 
 Dans notre cas nous avons rajouté ces quelques lignes à notre fichier de configuration settings.py
 
-![](images/Capture du 2018-11-29 10-47-33.png)
+![set](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-29%2010-47-33.png)
 
 Puis mise à jour du dépôt distant et de l'application en production sur la VM. 
 ###### Ne pas oublier de faire un ```pip install requirements.txt``` pour installer Sentry.
@@ -184,7 +184,7 @@ Sur la plateforme les
 
 ---------
 
-![](images/Capture du 2018-11-29 11-19-33.png)
+![](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-29%2011-19-33.png)
 
 
-![](images/Capture du 2018-11-29 11-15-25.png)
+![](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-29%2011-15-25.png)
