@@ -77,7 +77,7 @@ Ajout d'un nouveau processus dans la configuration de supervisor
 
 Voici la configuration mise en place 
 
-![config](images/Capture du 2018-11-28 15-12-51.png)
+![config](./images/Capture du 2018-11-28 15-12-51.png)
 
 A noter que nous pouvons transmettre via supervisor des variables environnement , nous les avons donc supprimer de notre .bashrc . (SECRET_KEY, DJANGO_SETTINGS_MODULE)
 
@@ -110,7 +110,7 @@ Nous l'interfaçons avec notre dépôt Github. Il surveille dans notre cas la br
 Création d'un [compte.](https://travis-ci.com/horlas/OC_Project11/builds)
 Ajout sur la dashboard de Travis de notre dépôt Github:
 
-![dashboard](images/Capture du 2018-11-28 16-29-22.png)
+![dashboard](./images/Capture du 2018-11-28 16-29-22.png)
 
 Sur notre environnement local , au même niveau que manage.py , nous créons un nouveau fichier travis.yml
 
