@@ -1,5 +1,5 @@
 # Projet 10 : Deploiement de la Plateforme Web : Pur_Beurre
------------
+
 
 ## Choix technologique et étapes d'installation
 * Création d'une Virtual Machnine (lxc) sur un Serveur Virtuel Privé.
@@ -34,7 +34,7 @@ sur le serveur:
 	git pull <depot>
 Le fichier prod_settings.py est à présent uniquement présent sur le serveur mais plus sur github.
 
-![prod_settings](images/Capture du 2018-11-28 10-48-03.png  "hgjghjhg")
+![prod_settings](images/Capture du 2018-11-28 10-48-03.png)
 
 ## Installation du serveur web : nginx
 
@@ -44,7 +44,7 @@ La configuration se trouve dans ```etc/nginx/sites-available/```
 Création d'un fichier de configuration ```touch etc/nginx/sites-available/pur_beurre```
 Edition et ecriture avec vim ```sudo vi etc/nginx/sites-available/pur_beurre```
 
-![](images/Capture du 2018-11-28 15-53-25.png)
+![config](images/Capture du 2018-11-28 15-53-25.png)
 
 Dans ce fichier de configuration les 'directives' sont:
 
@@ -74,9 +74,10 @@ Ajout d'un nouveau processus dans la configuration de supervisor
 	$cd etc/supervisor/conf.d/
 	
 	/etc/supervisor/conf.d$ sudo vi pur_beurre-gunicorn.conf
+
 Voici la configuration mise en place 
 
-![](images/Capture du 2018-11-28 15-12-51.png)
+![config](images/Capture du 2018-11-28 15-12-51.png)
 
 A noter que nous pouvons transmettre via supervisor des variables environnement , nous les avons donc supprimer de notre .bashrc . (SECRET_KEY, DJANGO_SETTINGS_MODULE)
 
@@ -109,7 +110,7 @@ Nous l'interfaçons avec notre dépôt Github. Il surveille dans notre cas la br
 Création d'un [compte.](https://travis-ci.com/horlas/OC_Project11/builds)
 Ajout sur la dashboard de Travis de notre dépôt Github:
 
-![](images/Capture du 2018-11-28 16-29-22.png)
+![dashboard](images/Capture du 2018-11-28 16-29-22.png)
 
 Sur notre environnement local , au même niveau que manage.py , nous créons un nouveau fichier travis.yml
 
