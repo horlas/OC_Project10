@@ -191,15 +191,20 @@ Sur la plateforme les
 
 
 ## Tâche planifiée
-### Programme mis en oeuvre
-Notre client virtuel Pur-Beurre peut vouloir mettre à jour sa base de données régulièrement avec des nouvelles données importées d'OpenFood Facts. 
-Nous sommes partis du fait qu'une bonne idée pourrait être de choisir les catégories comportant le moins de produits pour enrichir ces dernières. D'un autre côté la base Openfood Facts présente des incohérences : de nombreuses catégories n'ont qu'un seul produit. Ce paramètre ne permet pas à notre application (qui, pour mémoire, fait une recherche de substituts basée sur le nom de la catégorie de fonctionner correctement). Nous nous sommes dit que de supprimer les catégories contenant un seul produit permettrait un fonctionnement optimisé.
+### Généralités
+Notre client virtuel Pur-Beurre peut vouloir mettre à jour sa base de données régulièrement avec des nouvelles données importées d'OpenFood Facts.
+ 
+Une bonne idée pourrait être de choisir les catégories comportant le moins de produits pour enrichir ces dernières.
 
+D'un autre côté la base OpenFood Facts présente des incohérences : de nombreuses catégories n'ont qu'un seul produit. Ce paramètre ne permet pas à notre application (qui, pour mémoire, fait une recherche de substituts basée sur le nom de la catégorie de fonctionner correctement).
+
+Nous pensons que de supprimer régulièrement les catégories contenant un seul produit permettrait un fonctionnement optimisé.
+
+### Programme mis en oeuvre
 Le programme est une tâche personnalisée Django : elle se lance donc avec la commande suivante:
 
 	(env)$python manage.py update_database
 
-Le programme fait les tâches suivantes:
 
 * recherche des 10 catégories contenant le moins de produits et chargement de 60 produits en partant de ces catégories: 
 
@@ -277,6 +282,8 @@ Extrait de code :
 
 L'intégralité de ce programme se trouve [ici](https://github.com/horlas/OC_Project11/blob/master/quality/management/commands/update_database.py).
 
+
+### Sauvegarde des logs
 Comme le programme renvoie un certain nombre d'informations, il est intéressant de sauver les logs de son déroulement.
 C'est pour cela que, dans la tâche planifiée, nous créons aussi un fichier de logs update\_database.log  qui se trouve dans ~/var/log/pur_beurre/
 
@@ -290,7 +297,7 @@ Changement des droits d'accès :
 	:/var/log/pur_beurre# chown aurelia update_database.log
 	
 
-Écriture du script :
+### Script shell et Cron job
 
 	$ cd /usr/local/bin
 	$ sudo -s
@@ -321,3 +328,4 @@ Ajout des deux lignes suivantes
 	00 00 * * 7 update_database.sh
 
 La tâche s’exécutera tous les dimanches à minuit.
+![](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-30%2016-15-46.png)
