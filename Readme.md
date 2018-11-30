@@ -1,5 +1,7 @@
 # Projet 10 : Deploiement de la Plateforme Web : Pur_Beurre
 
+### [Application déployée](http://purbeurre.cedrix.org)
+
 
 ## Choix technologiques et étapes d'installation
 * Création d'une Virtual Machnine (lxc) sur un Serveur physique dédié.
