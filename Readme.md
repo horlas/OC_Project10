@@ -2,9 +2,9 @@
 
 
 ## Choix technologiques et étapes d'installation
-* Création d'une Virtual Machnine (lxc) sur un Serveur Virtuel Privé.
+* Création d'une Virtual Machnine (lxc) sur un Serveur physique dédié.
 * Installation d'Ubuntu 18.04 sur la VM.
-* Configuration un utilisateur différent de root avec droit sudo: aurelia avec mot de pass, de manière à ce que toutes actions importantes d'administrations de ce système soient faites volontairement.
+* Configuration un utilisateur différent de root avec droit sudo avec mot de pass, de manière à ce que toutes actions importantes d'administrations de ce système soient faites volontairement.
 * Modification du fichier sshd.config pour suspendre root de la connexion à la VM.
 * Mise à jour des paquets , installation de python postgres...
 * Création du dépot git dans /home/aurelia/pur_beurre/
@@ -56,9 +56,9 @@ Dans ce fichier de configuration les 'directives' sont:
 * proxy_set_header reecrit les headers de la requête HTTP.
 * X-Forwarded-For transmet l'adresse IP du client.
 	
-Création du lien vers ```etc/nginx/sites_enabled```
+Création du lien vers ```etc/nginx/sites_enabled``` pour activer le vhost
 
-	aurelia@projet-aurelia:/etc/nginx$ ln sites-available/pur_beurre sites-enabled/
+	aurelia@projet-aurelia:/etc/nginx$ ln -s sites-available/pur_beurre sites-enabled/
 
 Nous rechargeons la configuration du serveur
 
@@ -188,3 +188,136 @@ Sur la plateforme les
 
 
 ![](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-29%2011-15-25.png)
+
+
+## Tâche planifiée
+### Programme mis en oeuvre
+Notre client virtuel Pur-Beurre peut vouloir mettre à jour sa base de données régulièrement avec des nouvelles données importées d'OpenFood Facts. 
+Nous sommes partis du fait qu'une bonne idée pourrait être de choisir les catégories comportant le moins de produits pour enrichir ces dernières. D'un autre côté la base Openfood Facts présente des incohérences : de nombreuses catégories n'ont qu'un seul produit. Ce paramètre ne permet pas à notre application (qui, pour mémoire, fait une recherche de substituts basée sur le nom de la catégorie de fonctionner correctement). Nous nous sommes dit que de supprimer les catégories contenant un seul produit permettrait un fonctionnement optimisé.
+
+Le programme est une tâche personnalisée Django : elle se lance donc avec la commande suivante:
+
+	(env)$python manage.py update_database
+
+Le programme fait les tâches suivantes:
+
+* recherche des 10 catégories contenant le moins de produits et chargement de 60 produits en partant de ces catégories: 
+
+	Pour cela nous réutilisons notre fonction fill_database() développée pour le Projet 11 .
+Et nous supprimons bien évidement les doublons.
+
+Extrait de code :
+	
+	    def handle(self , *args , **options):
+	    	query=Product.objects.all().values('category').annotate(total=Count('category')).order_by('total')
+	    	# just display the ten smallest categories
+        	self.stdout.write(self.style.SUCCESS('How many products in the last ten category ? : '))
+        	for c in query[:10]:
+            	self.stdout.write(
+            		self.style.NOTICE('category : {}  nb_products : {} '.format(c['category'], c['total'])))
+        
+        	for c in query[:10]:
+            	# we get c['category']
+            	category = c['category']
+            	nb_products = fill_database(category)
+            	
+
+* Chargement des produits en base: création d'une fixture et appel de la commande ```loaddata``` de Django. Un compte des produits chargé en base est tracé.
+
+Extrait de code :
+
+	# test the fixture is well created
+            content = os.path.getsize('quality/fixtures/dugras_data.json')
+            if content != 0:
+                self.stdout.write(
+                    self.style.SUCCESS('Successfully created fixtures for the category {} '.format(category)))
+            else:
+                self.stdout.write(self.style.WARNING('Le fichier de fixture est vide'))
+
+            self.stdout.write(self.style.NOTICE('You are preparing to load {} products in data base'.format(nb_products)))
+
+            #test if products well loaded in database:
+            count_before = Product.objects.count()
+            call_command('loaddata', 'dugras_data.json', verbosity=0)
+            count_after = Product.objects.count()
+            if count_before + nb_products == count_after:
+                self.stdout.write(
+                    self.style.SUCCESS('Successfully loaded fixtures for the category {} '.format(category)))
+            else :
+                self.stdout.write(self.style.WARNING('A problem occurs'))
+
+* Les produits en doublons sont supprimés
+
+Extrait de code :
+
+	self.stdout.write(self.style.NOTICE('Deleting products with the same name'))
+
+            duplicates = Product.objects.values('name').order_by().annotate(max_id=Max('id') ,
+                                                                            count_id=Count('id')).filter(count_id__gt=1)
+            fields =['name']
+            for duplicate in duplicates:
+                Product.objects.filter(**{x: duplicate[x] for x in fields}).exclude(id=duplicate['max_id']).delete()
+
+            count_after_delete_duplicates = Product.objects.count()
+            self.stdout.write(self.style.SUCCESS('{} products have been deleted'.format((count_after - count_after_delete_duplicates))))
+
+* Et enfin, les catégories contenant un seul produit sont supprimées.
+
+Extrait de code :
+
+	# after uploading  smallest categories we delete orphan product
+        query_after = Product.objects.all().values('category').annotate(total=Count('category')).filter(total=1)
+
+        # just display the ten smallest categories before delete
+        self.stdout.write(self.style.NOTICE('How many category contains just one  product : {}'.format(len(query_after))))
+
+        # delete products
+        for product in query_after:
+            Product.objects.get(category=product['category']).delete()
+
+L'intégralité de ce programme se trouve [ici](https://github.com/horlas/OC_Project11/blob/master/quality/management/commands/update_database.py).
+
+Comme le programme renvoie un certain nombre d'informations, il est intéressant de sauver les logs de son déroulement.
+C'est pour cela que, dans la tâche planifiée, nous créons aussi un fichier de logs update\_database.log  qui se trouve dans ~/var/log/pur_beurre/
+
+Création du fichier de sauvegarde :
+	
+	/$ mkdir var/log/pur_beurre
+	/$ touch var/log/pur_beurre/update_database.log
+
+Changement des droits d'accès :
+
+	:/var/log/pur_beurre# chown aurelia update_database.log
+	
+
+Écriture du script :
+
+	$ cd /usr/local/bin
+	$ sudo -s
+	$ vim update_database.sh
+	  1 #!/bin/bash 
+  	  2 cd ~/pur_beurre/ 
+      3 source venv/bin/activate 
+      4 python manage.py update_database > /var/log/pur_beurre/update_database.log 
+      5 deactivate 
+      6 exit 
+                                                                             
+	  ~                                                                               
+	  ~                                                                               
+      ~                                                                               
+      -- :wq!                            7         7,0-1        Tout
+
+Rendre le script exécutable :
+
+	/usr/local/bin# chmod +x update_database.sh
+
+Créer la tâche planifiée :
+
+	$crontab -e
+
+Ajout des deux lignes suivantes
+	
+	PATH=/usr/local/bin
+	00 00 * * 7 update_database.sh
+
+La tâche s’exécutera tous les dimanches à minuit.
