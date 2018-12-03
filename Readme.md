@@ -81,7 +81,7 @@ Voici la configuration mise en place
 
 ![config](https://github.com/horlas/OC_Project10/blob/master/images/Capture%20du%202018-11-28%2015-12-51.png)
 
-A noter que nous pouvons transmettre via supervisor des variables environnement , nous les avons donc supprimer de notre .bashrc . (SECRET_KEY, DJANGO_SETTINGS_MODULE)
+A noter que nous pouvons transmettre via supervisor des variables environnement , nous les avons donc supprimées de notre .bashrc . (SECRET_KEY, DJANGO_SETTINGS_MODULE)
 
 La commande ```supervisorctl``` offre plein de [possibilités](http://supervisord.org/running.html#supervisorctl-actions)
 Elle s'execute avec les droits ```sudo```
